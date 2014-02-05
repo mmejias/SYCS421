@@ -16,9 +16,9 @@
 #include <GL/glu.h>
 #include <unistd.h>
 #include "Geometry.h"
-#include "Shoji.h"
+#include "RScreen.h"
 
-Shoji shoji;
+RScreen rscreen;
 Sphere bally(0.5, 0.0625);
 Sphere small(0.25, 0.125);
 
@@ -29,37 +29,43 @@ void update();
 void move();
 void initialize();
 void draw();
+void render();
 
 int main(int argc, char *argv[])
 {
     
-    initialize(); 
+    initialize();   //Initialize window 
+    
+    render();       //Render screen 
+                    //Render loop with keyboard input
 
+
+    return 0;
+}
+void render()
+{
     while(1)
     {
-        shoji.Draw();
+        rscreen.Draw();
 
-        if(shoji.getEvent().type == Expose)
+        if(rscreen.getEvent().type == Expose)
         {
             draw();
             usleep(500);
         }
-        else if(shoji.getEvent().type == KeyPress)
+        else if(rscreen.getEvent().type == KeyPress)
         {
-            keyDown(shoji.getEvent());
+            keyDown(rscreen.getEvent());
             update();
             draw();
             usleep(500);
             if(keyStates[XK_Escape] )
             {
-                shoji.Close();
+                rscreen.Close();
                 exit(0);
             }
         }
     }
-
-
-    return 0;
 }
 
 void keyDown(XEvent keyEvent)
@@ -174,7 +180,7 @@ void move()
 
 void initialize()
 {
-    shoji.Initialize();
+    rscreen.Initialize();
 
     glEnable(GL_DEPTH_TEST);
         glEnable(GL_LIGHTING);
@@ -186,7 +192,7 @@ void initialize()
 
 void draw()
 {
-    shoji.View();
+    rscreen.View();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -200,7 +206,7 @@ void draw()
     bally.draw();
     small.draw();
     
-    shoji.Buffer();
+    rscreen.Buffer();
 }
 
 void update()
