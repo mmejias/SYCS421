@@ -1,0 +1,45 @@
+#include <GL/gl.h>
+#include <GL/glx.h>
+#include <GL/glu.h>
+
+class Quad
+{
+    public:
+    int red, green, blue, alpha;
+    int x, y, z;
+    Quad();
+    void draw();
+};
+
+
+Quad::Quad()
+{
+    red = 0;
+    green = 0;
+    blue = 0;
+    alpha = 0;
+    x = 0 ;
+    y = 0;
+    z = 0;
+};
+
+void Quad::draw()
+{
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    glBegin(GL_QUADS);
+        glColor3f(1.0, 0.0, 0.0); glVertex3f(-0.75, -0.75, 0.0);
+        glColor3f(0.0, 1.0, 0.0); glVertex3f(0.75, -0.75, 0.0);
+        glColor3f(0.0, 0.0, 1.0); glVertex3f(0.75, 0.75, 0.0);
+        glColor3f(1.0, 1.0, 0.0); glVertex3f(-0.75, 0.75, 0.0);
+    glEnd();
+};
