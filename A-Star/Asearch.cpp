@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 #include <cmath>
 #include <time.h>
 #include <vector>
@@ -17,8 +16,10 @@ float calculatehn(Node, Node);
 void checkSuccessors(Node*, vector<Node>&, vector<Node>&, Node, Node);
 void collectInput(int&, int&, int&, int&);
 void generateSuccessors(bool&, Node, Node*, float[MAX_X][MAX_Y]);
-void printPath(vector<Node>);
+void printPath(char[MAX_X][MAX_Y], vector<Node>, int, int, int, int);
 void Randomize(char[MAX_X][MAX_Y], float[MAX_X][MAX_Y], int, int, int, int);
+void addcloselist(vector<Node>&, Node);
+void drawBoard(char[MAX_X][MAX_Y]);
 
 int main()
 {
@@ -27,6 +28,7 @@ int main()
     char display[MAX_X][MAX_Y]; 
     float grid[MAX_X][MAX_Y];
      
+    //Initialize board to empty
     for(int i = 0; i < MAX_X; i++)
         for(int j = 0; j < MAX_Y; j++)
         {
@@ -39,16 +41,12 @@ int main()
 
     collectInput(startx, starty, goalx, goaly);
 
+    //Randomize obstacles on board
     Randomize(display, grid, startx, starty, goalx, goaly);    
-    
-
-    for(int i = 0; i < MAX_X; i++) 
-    {
-         for(int j = 0; j < MAX_Y; j++)
-            printf( "[%c]", display[i][j]);
-         printf("\n");
-    } 
-    
+        
+    //Draw board to show randomly placed obstacles
+    drawBoard(display);
+     
     Node start(startx, starty);
     Node goal(goalx, goaly);
     Node current;
@@ -62,6 +60,8 @@ int main()
     openlist.push_back(start);
     make_heap(openlist.begin(), openlist.end());
     
+    //While the openlist contains nodes to search 
+    //Perform A* Search algorithm
     while(!openlist.empty())
     {
         
@@ -69,20 +69,12 @@ int main()
         pop_heap(openlist.begin(), openlist.end()); 
         openlist.pop_back();      
 
+        //If current equals goal, then print the path and exit search
         if(isGoal(current, goal))
         {
            closelist.push_back(goal);
-            for(int i = 0; i < closelist.size(); ++i)
-                    display[closelist[i].x][closelist[i].y] = 'P';
             
-           printPath(closelist);
-           printf("\n");
-           for(int i = 0; i < MAX_X; i++)
-           {
-               for(int j = 0; j < MAX_Y; j++)
-                 printf("[%c]", display[i][j]);
-               printf("\n");  
-           }
+           printPath(display, closelist, startx, starty, goalx, goaly);
            
            exit(EXIT_SUCCESS);
             
@@ -92,32 +84,15 @@ int main()
         checkSuccessors(successors, openlist, closelist, current, goal);
          
         //Add node current to close list
-            if(closelist.empty())
-            {
-                current.visited = true;
-                closelist.push_back(current);
-            }
-            else
-            {
-                if(current > closelist.back())
-                {
-                    closelist.pop_back();
-                    closelist.push_back(current);
-                }
-            
-                if(closelist.back() > current && isAdjacent(closelist.back(), current))
-                {
-                  closelist.push_back(current);
-                }
-           
-            }
-        
+        addcloselist(closelist, current);
+       
+        //Reset condition if successors are found 
         pathsGenerated = false;
 
     }
     //Need to add failure condition
     printf("No Path could be found.\n");
-    return 42;
+    return 0;
 }
 
 bool isGoal(Node pos, Node goal)
@@ -208,6 +183,13 @@ void checkSuccessors(Node* successors, vector<Node>& openlist, vector<Node>& clo
 
 void collectInput(int& startx, int& starty, int& goalx, int& goaly)
 {
+    printf("Example Entry\n");
+    printf("Enter starting point: 0 0\n");
+    printf("Enter goal point: 3 3\n");
+    printf("The board is a %dX%d board\n", MAX_X, MAX_Y);
+    printf("All x points should be greater than equal to 0 and less than %d\n", MAX_X);
+    printf("All y points should be greater than equal to 0 and less than %d\n\n", MAX_Y);
+
     do
     {
     printf("Enter starting point: ");
@@ -270,17 +252,33 @@ void generateSuccessors(bool& pathsGenerated, Node current, Node* successors, fl
         }
 }
 
-void printPath(vector<Node> path)
+void printPath(char display[MAX_X][MAX_Y], vector<Node> closelist, int startx, int starty, int goalx, int goaly)
 {
+            for(int i = 0; i < closelist.size(); ++i)
+            {
+                if(closelist[i].x == startx && closelist[i].y == starty)
+                {
+                    display[closelist[i].x][closelist[i].y] = 'S';
+                }
+                else if(closelist[i].x == goalx && closelist[i].y == goaly)
+                {
+                    display[closelist[i].x][closelist[i].y] = 'G';
+                }
+                else
+                {
+                    display[closelist[i].x][closelist[i].y] = 'P';
+                }
+            }
+    
     printf("Print Path \n\n");
-
-    while(!path.empty())
+    
+    while(!closelist.empty())
     {
-        path.front().print();
-        path.erase(path.begin(), path.begin()+1);
+        closelist.front().print();
+        closelist.erase(closelist.begin(), closelist.begin()+1);
     }
-          
-    //exit(EXIT_SUCCESS);
+    printf("\n"); 
+    drawBoard(display);
 }
 
 void Randomize(char display[MAX_X][MAX_Y], float grid[MAX_X][MAX_Y], int startx, int starty, int goalx, int goaly)
@@ -302,16 +300,53 @@ void Randomize(char display[MAX_X][MAX_Y], float grid[MAX_X][MAX_Y], int startx,
         }
 }
 
+void addcloselist(vector<Node>& closelist, Node current)
+{
+
+            if(closelist.empty())
+            {
+                current.visited = true;
+                closelist.push_back(current);
+            }
+            else
+            {
+                if(current > closelist.back())
+                {
+                    closelist.pop_back();
+                    closelist.push_back(current);
+                }
+            
+                if(closelist.back() > current && isAdjacent(closelist.back(), current))
+                {
+                  closelist.push_back(current);
+                }
+           
+            }
+}
+
+void drawBoard(char display[MAX_X][MAX_Y])
+{
+
+    for(int i = 0; i < MAX_X; i++) 
+    {
+         for(int j = 0; j < MAX_Y; j++)
+            printf( "[%c]", display[i][j]);
+         printf("\n");
+    }
+}
+
+
 /***DEBUGGING NOTE:::
  *
- *
- * THE PROGRAM COMPLETES SEARCH
- * FINDS PATH 
- * SOMETIMES SKIPS NODES
- * THERE MIGHT BE A PROBLEM WITH HEURISTIC CALCULATION
+ * THERE WERE SOME TESTS OF THIS A* SEARCH ALGORITHM THAT 
+ *      DID NOT PRINT A PATH FROM START TO GOAL WHEN A PATH COULD BE FOUND
+ * 
  *
  *
- * CHECK HEURISTICS 
+ *
+ *
+ *
+ * 
  *
  *
  */

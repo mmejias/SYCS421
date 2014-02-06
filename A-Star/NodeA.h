@@ -1,7 +1,3 @@
-/*You did not create a destructor, but you have a parent pointer
- * That is some pretty bold coding. Beware of memory leaks.
- * Note to self*/
-
 #include <stdio.h>
 
 class Node
@@ -53,7 +49,7 @@ void Node::calculatefn()
 
 void Node::print()
 {
-    printf("%d, %d\n", x, y);
+    printf("%d %d\n", x, y);
 }
 
 bool Node::operator< (const Node& other)
