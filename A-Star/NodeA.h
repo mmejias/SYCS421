@@ -64,7 +64,6 @@ bool Node::operator> (const Node& other)
 
 bool Node::operator== (const Node& other)
 {
-    //return this->f == other.f;
     return (this->x == other.x && this->y == other.y);
 }
 

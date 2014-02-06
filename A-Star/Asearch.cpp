@@ -2,9 +2,8 @@
  * it finds the path because the program does not print 'no path found'
  * However, the path is not printed. I believe the error is I am not keeping a moves list
  * and possibly only printing from the closed list.
- *
+ * Also, I think I am destroying the path in the closed list. MUST FIX.
 */
-
 
 #include <stdio.h>
 #include <cmath>
@@ -28,6 +27,7 @@ void printPath(char[MAX_X][MAX_Y], vector<Node>, int, int, int, int);
 void Randomize(char[MAX_X][MAX_Y], float[MAX_X][MAX_Y], int, int, int, int);
 void addcloselist(vector<Node>&, Node);
 void drawBoard(char[MAX_X][MAX_Y]);
+void initialize(char[MAX_X][MAX_Y], float[MAX_X][MAX_Y]);
 
 int main()
 {
@@ -37,12 +37,7 @@ int main()
     float grid[MAX_X][MAX_Y];
      
     //Initialize board to empty
-    for(int i = 0; i < MAX_X; i++)
-        for(int j = 0; j < MAX_Y; j++)
-        {
-            grid[i][j] = 0;
-            display[i][j] = 'O';   
-        }
+    initialize(display, grid);
 
     int startx, starty;
     int goalx, goaly;
@@ -343,6 +338,16 @@ void drawBoard(char display[MAX_X][MAX_Y])
     }
 }
 
+void initialize(char display[MAX_X][MAX_Y], float grid[MAX_X][MAX_Y])
+{
+
+    for(int i = 0; i < MAX_X; i++)
+        for(int j = 0; j < MAX_Y; j++)
+        {
+            grid[i][j] = 0;
+            display[i][j] = 'O';   
+        }
+}
 
 /***DEBUGGING NOTE:::
  *
