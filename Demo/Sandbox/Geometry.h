@@ -95,6 +95,7 @@ void Sphere::draw()
         }
         glEnd();
     }
+        
     glPopMatrix();
 }
 

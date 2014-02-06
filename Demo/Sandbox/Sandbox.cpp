@@ -196,9 +196,9 @@ void draw()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glLightfv(GL_LIGHT0, GL_SPECULAR, WHITE);
     glLightfv(GL_LIGHT0, GL_AMBIENT, BLACK);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, BLUE);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, WHITE);
 
     glMaterialfv(GL_FRONT, GL_SHININESS, BLING);
     glMaterialfv(GL_FRONT, GL_EMISSION, EMISSION);
