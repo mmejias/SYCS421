@@ -1,8 +1,10 @@
-/* My A* Search Algorithm has an error for the tenth case in which
- * it finds the path because the program does not print 'no path found'
- * However, the path is not printed. I believe the error is I am not keeping a moves list
- * and possibly only printing from the closed list.
- * Also, I think I am destroying the path in the closed list. MUST FIX.
+/*
+ * YOU ARE WORKING IN THE NODE SUCCESSOR GENERATION
+ * YOU WERE SETTING THE PARENT POINTER OF NODES GENERATED TO THE CURRENT
+ * IN THE FUNCTION GENERATE SUCCESSORS.
+ * MAKE SURE AT ONE END OF YOUR ARRAY PREFERABLY BEGINNING YOU SET IT EQUAL
+ * TO NULL. ALSO, CHECK YOUR NODEA.h, I don't think your equal operator is 
+ * correct for assigning nodes
 */
 
 #include <stdio.h>
@@ -167,13 +169,15 @@ void checkSuccessors(Node* successors, vector<Node>& openlist, vector<Node>& clo
             }
             make_heap(openlist.begin(), openlist.end());          
 
+            /*
             for(int k = 0; k < closelist.size(); ++k)
             {
                 if(successors[i] == closelist[k] && successors[i].visited)
                 {
                     closelist.erase(closelist.begin()+k, closelist.begin()+k+1);
                 }
-            }//End of Step 15           
+            }//End of Step 15 
+            */          
                  
                 //Add node successor to the open list
                 if(successors[i].visited)
@@ -219,6 +223,10 @@ void generateSuccessors(bool& pathsGenerated, Node current, Node* successors, fl
                 grid[current.x][current.y-1] = 1;
                 successors[0].visited = true;
                 pathsGenerated = true;
+                
+                //Set parent to current
+               // successors[0].parent = new Node;
+                //successors[0].parent -> current.parent;
             }
         }
         if(current.y+1 < MAX_Y)
@@ -296,7 +304,7 @@ void Randomize(char display[MAX_X][MAX_Y], float grid[MAX_X][MAX_Y], int startx,
                 continue;
 
             flip  = rand() % 100 + 1;
-            if(flip > 90)
+            if(flip > 80)
             {
                 grid[i][j] = 1;
                 display[i][j] = 'X';
@@ -350,17 +358,3 @@ void initialize(char display[MAX_X][MAX_Y], float grid[MAX_X][MAX_Y])
         }
 }
 
-/***DEBUGGING NOTE:::
- *
- * THERE WERE SOME TESTS OF THIS A* SEARCH ALGORITHM THAT 
- *      DID NOT PRINT A PATH FROM START TO GOAL WHEN A PATH COULD BE FOUND
- * 
- *
- *
- *
- *
- *
- * 
- *
- *
- */

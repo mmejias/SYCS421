@@ -100,4 +100,8 @@ Node& Node::operator= (const Node& other)
     x = other.x;
     y = other.y;
     visited = other.visited;
+
+    //
+    parent = new Node;
+    parent = other.parent;
 }

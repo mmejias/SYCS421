@@ -78,6 +78,7 @@ void Sphere::draw()
     {
         //Builds the sphere by layering (kind of like a 3D printer)
         glBegin(GL_TRIANGLE_STRIP);
+        glLoadIdentity();
         //Points direction of lighting 
         for(float angle1 = 0.0; angle1 <= 3.1416*2.0+resol; angle1 += resol)
         {
